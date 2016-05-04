@@ -18,7 +18,8 @@ require(dirname(dirname(dirname(dirname(__FILE__)))) . '/vendor/autoload.php');
  * @author robindotnet2010 <https://github.com/robindotnet2010>
  * @since 0.1.0
  */
-class Vtiger  {
-  
+class Vtiger {
+
 
 }
+

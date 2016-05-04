@@ -1,14 +1,16 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/src/robindotnet2010/Vtiger/Vtiger.php');
+require_once(dirname(dirname(__FILE__)) . '/vendor/autoload.php');
 use robindotnet2010\Vtiger\Vtiger as myClass;
+use robindotnet2010\Vtiger\Modules\Lead;
+
+use robindotnet2010\Vtiger\Services\HttpClient;
 
 class VtigerTest extends PHPUnit_Framework_TestCase
 {
 	public function testCanBeNegated () {
 		$a = new myClass();
-		$a->increase(9)->increase(8);
-		$b = $a->negate();
-		$this->assertEquals(0, $b->myParam);
+		$test = new Lead();
+		$service = new HttpClient();
 	}
 
 }
