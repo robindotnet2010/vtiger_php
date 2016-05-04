@@ -1,0 +1,31 @@
+{
+  "name": "robindotnet2010/vtiger_php",
+  "version": "0.1.0",
+  "homepage": "https://github.com/robindotnet2010/vtiger_php",
+  "description": "",
+  "keywords": [
+    "php"
+  ],
+  "authors": [
+    {
+      "name": "robindotnet2010",
+      "homepage": "https://github.com/robindotnet2010",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/robindotnet2010/vtiger_php/issues",
+    "source": "https://github.com/robindotnet2010/vtiger_php"
+  },
+  "license": "MIT",
+  "type": "library",
+  "require": {
+    "php": ">=5.3.0",
+    "monolog/monolog": "1.*"
+  },
+  "require-dev": {
+    "phpdocumentor/phpdocumentor": "2.*",
+    "phpunit/phpunit": "4.*",
+    "sebastian/phpcpd": "2.*"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "vtiger_php",
+  "version": "0.1.0",
+  "author": "robindotnet2010",
+  "homepage": "https://github.com/robindotnet2010/vtiger_php",
+  "bugs": "https://github.com/robindotnet2010/vtiger_php/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/robindotnet2010/vtiger_php.git"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4",
+    "grunt-shell": "~0.7",
+    "grunt-phplint": "~0.0",
+    "grunt-phpunit": "~0.3",
+    "grunt-version": "~1.0",
+    "load-grunt-tasks": "~3.1",
+    "time-grunt": "~1.1"
+  }
+}
