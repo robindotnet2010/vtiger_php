@@ -27,6 +27,6 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
 
   function __construct()
   {
-    # code...
+    
   }
 }
