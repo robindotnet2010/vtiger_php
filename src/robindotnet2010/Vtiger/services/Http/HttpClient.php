@@ -3,7 +3,7 @@
 namespace robindotnet2010\Vtiger\Services;
 
 use GuzzleHttp;
-
+use GuzzleHttp\RequestOptions;
 use robindotnet2010\Vtiger\Services\HttpClientInterface;
 
 /**
@@ -11,7 +11,7 @@ use robindotnet2010\Vtiger\Services\HttpClientInterface;
  */
 class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
 {
-  /**
+    /**
    * undocumented class variable
    *
    * @var string
@@ -25,8 +25,27 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
    */
    protected $access_token;
 
-  function __construct()
+   /**
+    * RequestOptions Class
+    *
+    * @var mixed
+    */
+    protected $options;
+
+    public function __construct()
+    {
+        $this->options = new RequestOptions();
+        $this->options->DEBUG = true;
+    }
+
+  /**
+   * Set Method Name
+   *
+   * @param $method var Description
+   * @return mixed
+   */
+  public function setMethod($method)
   {
-    
+      //$request->
   }
 }

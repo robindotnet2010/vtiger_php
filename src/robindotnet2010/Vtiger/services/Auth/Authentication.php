@@ -2,6 +2,9 @@
 
 namespace robindotnet2010\Vtiger\Services;
 
+use GuzzleHttp;
+use GuzzleHttp\Psr7\Request;
+
 class Authentication
 {
     /**
@@ -28,7 +31,7 @@ class Authentication
     /**
      * HttpClient
      *
-     * @var mixed
+     * @var HttpClient | mixed
      */
     protected $http;
 
@@ -50,11 +53,23 @@ class Authentication
     public function authenticate()
     {
         if (! $this->isLogged()) {
-            $this->getChallenge();
+            $this->login();
         }
     }
 
-    private function getChallenge()
+    private function login()
     {
+        $this->challenge();
+    }
+
+    private function challenge()
+    {
+        try {
+            $request = new Request(
+            'GET',
+            'webservice.php'
+          );
+        } catch (AuthenticationException $e) {
+        }
     }
 }

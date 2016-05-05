@@ -11,6 +11,7 @@
 
 namespace robindotnet2010\Vtiger;
 
+use robindotnet2010\Vtiger\Services\HttpClient;
 use robindotnet2010\Vtiger\Services\Authentication;
 
 require(dirname(dirname(dirname(dirname(__FILE__)))) . '/vendor/autoload.php');
@@ -22,9 +23,23 @@ require(dirname(dirname(dirname(dirname(__FILE__)))) . '/vendor/autoload.php');
 */
 class Vtiger
 {
+    /**
+   * Authentication Object
+   *
+   * @var mixed
+   */
+   protected $auth;
 
-    public function __construct(Authentication $auth)
+   /**
+    * undocumented class variable
+    *
+    * @var string
+    */
+    protected $http;
+
+    public function __construct($base_uri, $access_token)
     {
-        (;
+        $this->http = new HttpClient();
+        $this->auth = new Authentication($this->http);
     }
 }
