@@ -13,5 +13,6 @@ class VtigerTest extends PHPUnit_Framework_TestCase
             * TODO: Write readable tests
             **/
         $a = new myClass("base_uri", "access_token");
+        echo "test";
     }
 }
