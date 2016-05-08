@@ -91,7 +91,41 @@ class Authentication
         if (! $body->success) {
             throw new \Exception($body->error->message);
         }
+        $this->userId = $body->result->userId;
+        $this->sessionId = $body->result->sessionName; //Typo of Vtiger WebService
+    }
 
+    public function logout()
+    {
+        try {
+            $request = new Request(
+                'POST',
+                'webservice.php'
+            );
+
+            $response = $this->http->send($request,[
+                'form_params' => [
+                    'operation' => 'logout',
+                    'sessionName' => $this->sessionId
+                ]
+            ]);
+            $this->parseLogoutResponse($response);
+        } catch (\Exception $e) {
+
+        }
+    }
+
+    private function parseLogoutResponse($response)
+    {
+        $body = json_decode($response->getBody());
+        if (! $body->success) {
+            throw new \Exception($body->error->message);
+        }
+        unset(
+            $this->challenge,
+            $this->userId,
+            $this->sessionId
+        );
     }
 
     private function getChallenge()
@@ -126,4 +160,10 @@ class Authentication
         $this->challenge->setServerTime(date('Y-m-d H:i:s', $body->result->serverTime));
         $this->challenge->setExpireTime(date('Y-m-d H:i:s', $body->result->expireTime));
     }
+
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
 }

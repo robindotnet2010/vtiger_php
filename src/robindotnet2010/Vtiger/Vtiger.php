@@ -11,6 +11,8 @@
 
 namespace robindotnet2010\Vtiger;
 
+use GuzzleHttp;
+use GuzzleHttp\Psr7\Request;
 use robindotnet2010\Vtiger\Services\HttpClient;
 use robindotnet2010\Vtiger\Services\Authentication;
 
@@ -43,8 +45,37 @@ class Vtiger
         $this->auth = new Authentication($this->http);
     }
 
+    public function logout()
+    {
+        $this->auth->logout();
+    }
+
     public function someAction()
     {
         $this->auth->authenticate();
+    }
+
+    public function getAll($module)
+    {
+        $this->auth->authenticate();
+        try {
+            $request = new Request(
+                'GET',
+                'webservice.php'
+            );
+
+            $response = $this->http->send($request,[
+                'query' => [
+                    'operation' => 'query',
+                    'sessionName' => $this->auth->getSessionId(),
+                    'query' => 'SELECT * FROM ' . $module . ';'
+                ]
+            ]);
+            $body = json_decode($response->getBody());
+            var_dump($body);
+        } catch (\Exception $e) {
+            echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
+        }
+
     }
 }
