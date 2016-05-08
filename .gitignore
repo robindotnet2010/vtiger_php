@@ -6,6 +6,8 @@ vendor
 composer.lock
 composer.phar
 
+.tags
+.tags_swap
 GRTAGS
 GPATH
 GTAGS

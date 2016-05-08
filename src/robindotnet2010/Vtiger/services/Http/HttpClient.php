@@ -32,8 +32,9 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
     */
     protected $options;
 
-    public function __construct()
+    public function __construct($base_uri, $access_token)
     {
+        parent::__construct(['base_uri' => $base_uri]);
         $this->options = new RequestOptions();
         $this->options->DEBUG = true;
     }

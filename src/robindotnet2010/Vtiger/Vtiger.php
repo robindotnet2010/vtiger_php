@@ -39,7 +39,12 @@ class Vtiger
 
     public function __construct($base_uri, $access_token)
     {
-        $this->http = new HttpClient();
+        $this->http = new HttpClient($base_uri, $access_token);
         $this->auth = new Authentication($this->http);
+    }
+
+    public function someAction()
+    {
+        $this->auth->authenticate();
     }
 }

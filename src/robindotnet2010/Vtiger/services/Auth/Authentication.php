@@ -66,10 +66,29 @@ class Authentication
     {
         try {
             $request = new Request(
-            'GET',
-            'webservice.php'
-          );
-        } catch (AuthenticationException $e) {
+                'GET',
+                'webservice.php'
+            );
+
+            $response = $this->http->send($request,[
+                'query' => [
+                    'operation' => 'getchallenge',
+                    'username' => 'admin'
+                ]
+            ]);
+            $this->parseResponse($response);
+        } catch (\Exception $e) {
+            echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
         }
+    }
+
+    private function parseResponse($response)
+    {
+        $body = json_decode($response->getBody());
+        if (! $body->success) {
+            throw new \Exception('The username does not exist.');
+        }
+        $serverTime = date('Y-m-d H:i:s', $body->result->serverTime);
+        echo $serverTime;
     }
 }
