@@ -4,6 +4,7 @@ namespace robindotnet2010\Vtiger\Services;
 
 use GuzzleHttp;
 use GuzzleHttp\Psr7\Request;
+use robindotnet2010\Vtiger\Services\Auth\Challenge;
 
 class Authentication
 {
@@ -35,6 +36,8 @@ class Authentication
      */
     protected $http;
 
+    public $challenge;
+
     public function __construct(HttpClientInterface $http)
     {
         if (! isset($this->http)) {
@@ -59,10 +62,39 @@ class Authentication
 
     private function login()
     {
-        $this->challenge();
+        $this->getChallenge();
+
+        try {
+            $request = new Request(
+                'POST',
+                'webservice.php'
+            );
+
+            $response = $this->http->send($request,[
+                'form_params' => [
+                    'operation' => 'login',
+                    'username' => $this->http->getUserName(),
+                    'accessKey' => md5(
+                        $this->challenge->getToken() . $this->http->getAccessToken()
+                    )
+                ]
+            ]);
+            $this->parseLoginResponse($response);
+        } catch (\Exception $e) {
+            echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
+        }
     }
 
-    private function challenge()
+    private function parseLoginResponse($response)
+    {
+        $body = json_decode($response->getBody());
+        if (! $body->success) {
+            throw new \Exception($body->error->message);
+        }
+
+    }
+
+    private function getChallenge()
     {
         try {
             $request = new Request(
@@ -73,22 +105,25 @@ class Authentication
             $response = $this->http->send($request,[
                 'query' => [
                     'operation' => 'getchallenge',
-                    'username' => 'admin'
+                    'username' => $this->http->getUserName(),
                 ]
             ]);
-            $this->parseResponse($response);
+            $this->parseChallengeResponse($response);
         } catch (\Exception $e) {
             echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
         }
     }
 
-    private function parseResponse($response)
+    private function parseChallengeResponse($response)
     {
         $body = json_decode($response->getBody());
         if (! $body->success) {
             throw new \Exception('The username does not exist.');
         }
-        $serverTime = date('Y-m-d H:i:s', $body->result->serverTime);
-        echo $serverTime;
+        $this->challenge = new Challenge();
+        $this->challenge->setStatus('success');
+        $this->challenge->setToken($body->result->token);
+        $this->challenge->setServerTime(date('Y-m-d H:i:s', $body->result->serverTime));
+        $this->challenge->setExpireTime(date('Y-m-d H:i:s', $body->result->expireTime));
     }
 }

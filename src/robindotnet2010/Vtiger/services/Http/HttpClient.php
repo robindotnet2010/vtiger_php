@@ -25,6 +25,7 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
    */
    protected $access_token;
 
+    protected $username;
    /**
     * RequestOptions Class
     *
@@ -32,9 +33,11 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
     */
     protected $options;
 
-    public function __construct($base_uri, $access_token)
+    public function __construct($base_uri, $username, $access_token)
     {
         parent::__construct(['base_uri' => $base_uri]);
+        $this->access_token = $access_token;
+        $this->username = $username;
         $this->options = new RequestOptions();
         $this->options->DEBUG = true;
     }
@@ -49,4 +52,14 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
   {
       //$request->
   }
+    public function getAccessToken()
+    {
+        return $this->access_token;
+    }
+
+    public function getUserName()
+    {
+        return $this->username;
+    }
+
 }
