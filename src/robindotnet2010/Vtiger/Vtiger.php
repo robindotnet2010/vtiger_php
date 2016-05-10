@@ -14,6 +14,7 @@ namespace robindotnet2010\Vtiger;
 use GuzzleHttp;
 use GuzzleHttp\Psr7\Request;
 use robindotnet2010\Vtiger\Services\HttpClient;
+use robindotnet2010\Vtiger\Services\HttpResponse;
 use robindotnet2010\Vtiger\Services\Authentication;
 
 require(dirname(dirname(dirname(dirname(__FILE__)))) . '/vendor/autoload.php');
@@ -71,11 +72,12 @@ class Vtiger
                     'query' => 'SELECT * FROM ' . $module . ';'
                 ]
             ]);
-            $body = json_decode($response->getBody());
-            var_dump($body);
+            $result = new HttpResponse($response);
+            return $result;
         } catch (\Exception $e) {
             echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
         }
 
     }
+
 }
