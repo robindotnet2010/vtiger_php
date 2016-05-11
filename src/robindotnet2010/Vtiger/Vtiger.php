@@ -26,58 +26,56 @@ require(dirname(dirname(dirname(dirname(__FILE__)))) . '/vendor/autoload.php');
 */
 class Vtiger
 {
-    /**
-   * Authentication Object
-   *
-   * @var mixed
-   */
-   protected $auth;
 
    /**
     * undocumented class variable
     *
     * @var string
     */
-    protected $http;
+    protected $api;
 
     public function __construct($base_uri,$username, $access_token)
     {
-        $this->http = new HttpClient($base_uri, $username, $access_token);
-        $this->auth = new Authentication($this->http);
+        $this->api = new HttpClient($base_uri, $username, $access_token);
     }
 
     public function logout()
     {
-        $this->auth->logout();
+        $this->api->logout();
     }
 
     public function someAction()
     {
-        $this->auth->authenticate();
+        $this->api->authenticate();
     }
 
     public function getAll($module)
     {
-        $this->auth->authenticate();
         try {
-            $request = new Request(
-                'GET',
-                'webservice.php'
-            );
-
-            $response = $this->http->send($request,[
-                'query' => [
-                    'operation' => 'query',
-                    'sessionName' => $this->auth->getSessionId(),
-                    'query' => 'SELECT * FROM ' . $module . ';'
-                ]
-            ]);
-            $result = new HttpResponse($response);
-            return $result;
+            $this->api->authenticate();
+            $this->api->setMethod("GET");
+            $this->api->setModule($module);
+            $this->api->setOperation("query");
+            $http_options = $this->api->prepareQueryStrings();
+            return $this->api->executeRequest($http_options);
         } catch (\Exception $e) {
             echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
         }
 
+    }
+
+    public function getRecordsbyId($module, $id)
+    {
+        try {
+            $this->api->authenticate();
+            $this->api->setMethod("GET");
+            $this->api->setModule($module);
+            $this->api->setOperation("query");
+            $http_options = $this->api->prepareQueryStrings([], ["firstname","company"]);
+            return $this->api->executeRequest($http_options);
+        } catch (\Exception $e) {
+            echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
+        }
     }
 
 }

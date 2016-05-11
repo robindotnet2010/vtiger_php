@@ -5,6 +5,8 @@ namespace robindotnet2010\Vtiger\Services;
 use GuzzleHttp;
 use GuzzleHttp\RequestOptions;
 use robindotnet2010\Vtiger\Services\HttpClientInterface;
+use robindotnet2010\Vtiger\Services\HttpResponse;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * HttpClient
@@ -26,32 +28,91 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
    protected $access_token;
 
     protected $username;
-   /**
-    * RequestOptions Class
-    *
-    * @var mixed
-    */
-    protected $options;
+
+    protected $auth;
 
     public function __construct($base_uri, $username, $access_token)
     {
         parent::__construct(['base_uri' => $base_uri]);
         $this->access_token = $access_token;
         $this->username = $username;
-        $this->options = new RequestOptions();
-        $this->options->DEBUG = true;
+        $this->auth = new Authentication($this);
     }
 
-  /**
+    public function executeRequest($http_options = [])
+    {
+        try {
+            $request = new Request(
+                $this->method,
+                'webservice.php'
+            );
+
+            $response = $this->send($request, $http_options);
+            return $result = new HttpResponse($response);
+        } catch (\Exception $e) {
+            echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
+        }
+    }
+
+    public function prepareQueryStrings($query_strings = [], $columns = ["*"], $authenticated = true)
+    {
+        $http_options = [];
+
+        $http_options['debug'] = true;
+
+        if (! empty($query_strings)) {
+            $http_options['query'] = $query_strings;
+        }
+
+        if ($authenticated) {
+            $http_options['query']['sessionName'] = $this->auth->getSessionId();
+        }
+
+        if ($this->operation == 'query') {
+            $http_options['query']['query'] = $this->parseSQLQuery('SELECT', $columns);
+        }
+
+        $http_options['query']['operation'] = $this->operation;
+
+        return $http_options;
+    }
+
+    public function logout()
+    {
+        $this->auth->logout();
+    }
+
+    public function authenticate()
+    {
+        $this->auth->authenticate();
+    }
+
+
+    public function parseSQLQuery($sql_operation, $columns = ['*'])
+    {
+        return $sql_operation . " " . join(",", $columns) . " FROM " . $this->module . ";";
+    }
+
+    public function setModule($module)
+    {
+        $this->module = $module;
+    }
+
+    public function setOperation($operation)
+    {
+        $this->operation = $operation;
+    }
+
+   /**
    * Set Method Name
    *
    * @param $method var Description
    * @return mixed
    */
-  public function setMethod($method)
-  {
-      //$request->
-  }
+    public function setMethod($method)
+    {
+        $this->method = $method;
+    }
     public function getAccessToken()
     {
         return $this->access_token;

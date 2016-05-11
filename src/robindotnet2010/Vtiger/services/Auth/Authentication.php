@@ -5,6 +5,7 @@ namespace robindotnet2010\Vtiger\Services;
 use GuzzleHttp;
 use GuzzleHttp\Psr7\Request;
 use robindotnet2010\Vtiger\Services\Auth\Challenge;
+use robindotnet2010\Vtiger\Services\HttpClientInterface;
 
 class Authentication
 {
