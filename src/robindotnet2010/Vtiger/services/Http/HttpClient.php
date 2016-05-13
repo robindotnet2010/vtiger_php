@@ -54,7 +54,7 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
         }
     }
 
-    public function prepareQueryStrings($query_strings = [], $columns = ["*"], $authenticated = true)
+    public function prepareQueryStrings($query_strings = [], $columns = ["*"], $filter = [], $authenticated = true)
     {
         $http_options = [];
 
@@ -69,7 +69,7 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
         }
 
         if ($this->operation == 'query') {
-            $http_options['query']['query'] = $this->parseSQLQuery('SELECT', $columns);
+            $http_options['query']['query'] = $this->parseSQLQuery('SELECT', $columns, $filter);
         }
 
         $http_options['query']['operation'] = $this->operation;
@@ -87,10 +87,24 @@ class HttpClient extends GuzzleHttp\Client implements HttpClientInterface
         $this->auth->authenticate();
     }
 
-
-    public function parseSQLQuery($sql_operation, $columns = ['*'])
+    public function getFilterSQLQuery($filter)
     {
-        return $sql_operation . " " . join(",", $columns) . " FROM " . $this->module . ";";
+        if (is_array($filter) && empty($filter)) {
+            return "";
+        }
+        $sqlQuery = " WHERE ";
+        $beforeImplode = [];
+        foreach ($filter as $column => $value) {
+            array_push($beforeImplode,$column . "=" . $value);
+        }
+        $sqlQuery .= implode(" AND ", $beforeImplode);
+        return $sqlQuery;
+    }
+
+    public function parseSQLQuery($sql_operation, $columns = ['*'], $filter = [])
+    {
+        $filterSQLQuery = $this->getFilterSQLQuery($filter);
+        return $sql_operation . " " . join(",", $columns) . " FROM " . $this->module . "$filterSQLQuery;";
     }
 
     public function setModule($module)

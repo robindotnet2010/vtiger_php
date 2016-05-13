@@ -64,14 +64,14 @@ class Vtiger
 
     }
 
-    public function getRecordsbyId($module, $id)
+    public function getRecordsWithFilter($module, $filter)
     {
         try {
             $this->api->authenticate();
             $this->api->setMethod("GET");
             $this->api->setModule($module);
             $this->api->setOperation("query");
-            $http_options = $this->api->prepareQueryStrings([], ["firstname","company"]);
+            $http_options = $this->api->prepareQueryStrings([], ['*'], $filter);
             return $this->api->executeRequest($http_options);
         } catch (\Exception $e) {
             echo 'We could not connect to the server - ' . $e->getMessage() . '\n';
